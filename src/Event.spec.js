@@ -2,9 +2,9 @@
 import produce from 'immer';
 
 const tap = require('tap');
-const p = require('./../package.json');
+const p = require('../package.json');
 
-const { Event, ABSENT } = require('./../lib/index');
+const { Event, ABSENT } = require('../lib');
 
 tap.test(p.name, (suite) => {
   suite.test('Event', (testEvent) => {

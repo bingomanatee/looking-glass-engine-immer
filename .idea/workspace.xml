@@ -32,7 +32,22 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7d802906-2f1f-4c94-9718-b240e37b78c5" name="Default Changelist" comment="" />
+    <list default="true" id="7d802906-2f1f-4c94-9718-b240e37b78c5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/ValueMapStream.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/addTrans.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/setProxy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/ValueMapStream.spec.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/setProxy.spec.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/util.spec.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Event.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Event.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ValueStream.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ValueStream.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Event.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Event.spec.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ValueStream.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/ValueStream.spec.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,18 +68,47 @@
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/test" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.standard" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.standard" value="" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="yarn" />
-    <property name="settings.editor.selected.configurable" value="settings.javascript.linters.eslint" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/test" />
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/test" />
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -74,6 +118,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1608831764654</updated>
+      <workItem from="1608955823865" duration="30451000" />
     </task>
     <servers />
   </component>
@@ -92,33 +137,8 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="1127" y="617" key="Github.ShareDialog" timestamp="1608924541988">
-      <screen x="0" y="23" width="2560" height="1417" />
-    </state>
-    <state x="1127" y="617" key="Github.ShareDialog/0.23.2560.1417@0.23.2560.1417" timestamp="1608924541988" />
-    <state x="649" y="283" key="SettingsEditor" timestamp="1608913408876">
-      <screen x="0" y="23" width="2560" height="1417" />
-    </state>
-    <state x="649" y="283" key="SettingsEditor/0.23.2560.1417@0.23.2560.1417" timestamp="1608913408876" />
-    <state x="896" y="438" width="738" height="586" key="find.popup" timestamp="1608917897483">
-      <screen x="0" y="23" width="2560" height="1417" />
-    </state>
-    <state x="896" y="438" width="738" height="586" key="find.popup/0.23.2560.1417@0.23.2560.1417" timestamp="1608917897483" />
-    <state x="861" y="341" width="838" height="1032" key="search.everywhere.popup" timestamp="1608915529190">
-      <screen x="0" y="23" width="2560" height="1417" />
-    </state>
-    <state x="861" y="341" width="838" height="1032" key="search.everywhere.popup/0.23.2560.1417@0.23.2560.1417" timestamp="1608915529190" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/Event.js</url>
-          <line>75</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
