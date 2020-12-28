@@ -1,9 +1,12 @@
-import { BehaviorSubject, from, Subject } from 'rxjs';
+import {
+  BehaviorSubject, from, Subject, of, combineLatest, Observable,
+} from 'rxjs';
 import isEqual from 'lodash/isEqual';
 import {
-  combineLatest, distinctUntilChanged, filter, map,
+  filter, map, tap, switchMap, catchError,
 } from 'rxjs/operators';
 import lGet from 'lodash/get';
+import { nanoid } from 'nanoid';
 import Event, { EventFilter } from './Event';
 import {
   E_COMMIT, E_FILTER, E_INITIAL, E_VALIDATE, A_NEXT, E_COMPLETE, A_ANY,
@@ -19,17 +22,41 @@ export default class ValueStream {
   constructor(value, options = {}) {
     this._valueSubject = new BehaviorSubject(value);
     this._eventTree = new Map(defaultEventTree);
-    this._eventSubject = new Subject();
-    this._eventStream = this._eventSubject.pipe(map((data) => new Event(data)));
+
     this._errorStream = new Subject();
     // eslint-disable-next-line no-shadow
-    const { filter, name } = options;
-    if (typeof filter === 'function') {
-      this.filter = filter;
+    const { filter: myFilter, name, debug = false } = options;
+    if (typeof myFilter === 'function') {
+      this.filter(myFilter);
     }
-    this.name = name;
+    this.name = name || nanoid();
+    this.debug = debug;
 
     this._watchEvents();
+  }
+
+  get _eventSubject() {
+    if (!this._$eventSubject) {
+      this._$eventSubject = new Subject();
+    }
+    return this._$eventSubject;
+  }
+
+  get _eventStream() {
+    const target = this;
+    if (!this._$eventStream) {
+      this._$eventStream = new Subject()
+        .pipe(
+          switchMap((value) => new BehaviorSubject(value)),
+          catchError((e) => {
+            target.error(e);
+            return null;
+          }),
+          filter((e) => e instanceof Event),
+        );
+    }
+
+    return this._$eventStream;
   }
 
   error(error, event) {
@@ -103,6 +130,7 @@ export default class ValueStream {
     this._eventStream.pipe(
       filter((event) => test.matches(event)),
     ).subscribe((event) => {
+      if (this.debug) console.log('doing ', event.toString(), fn.toString());
       try {
         fn(event, target);
       } catch (error) {
@@ -116,44 +144,18 @@ export default class ValueStream {
     return this;
   }
 
-  _onEventError(error, originalValue, currentValue, currentStage) {
-    this._errorStream.next({
-      error,
-      originalValue,
-      currentValue,
-      currentStage,
-    });
-  }
-
   send(action, value, stages) {
-    const valueStream = new BehaviorSubject(value);
     const actionStages = stages || this._eventTree.get(action) || this._eventTree.get(A_ANY);
-
-    const stageStream = from(actionStages);
-    let currentStage = null;
-
-    const manifest = {
-      next: (stage) => {
-        currentStage = stage;
-        if (!valueStream.isStopped) {
-          this._eventSubject.next({
-            action,
-            valueStream,
-            stage,
-          });
-        }
-      },
-      error: (error) => {
-        this._onEventError(error, value, valueStream.getValue(), currentStage);
-      },
-      complete: () => {
-        if (!valueStream.isStopped) {
-          valueStream.complete();
-        }
-      },
-    };
-
-    stageStream.subscribe(manifest);
+    combineLatest(of(action), of(new BehaviorSubject(value)), from(actionStages))
+      // eslint-disable-next-line no-unused-vars
+      .pipe(
+        filter(([_, stream]) => !stream.isStopped),
+        map((args) => new Event(...args)),
+      )
+      .subscribe({
+        next: this._eventStream.next.bind(this._eventStream),
+        error: this._errorStream.next.bind(this._errorStream),
+      });
   }
 
   next(value) {
@@ -173,6 +175,9 @@ export default class ValueStream {
   }
 
   subscribe(onNext, onError, onDone) {
+    if (typeof onNext === 'object') {
+      return this._valueSubject.subscribe(onNext);
+    }
     let failSub;
     if (typeof onError === 'function') {
       failSub = this._errorStream.subscribe(onError);
@@ -196,5 +201,9 @@ export default class ValueStream {
       manifest.next = onNext;
     }
     return this._valueSubject.subscribe(manifest);
+  }
+
+  pipe(...args) {
+    return this._valueSubject.pipe(...args);
   }
 }

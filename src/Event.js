@@ -69,7 +69,7 @@ export default class Event {
   }
 
   toString() {
-    let list = ['<<'];
+    const list = ['<<'];
     if (this.action !== Å) list.push('action: ', this.action.toString());
     if (this.stage !== Å) list.push('stage:', this.stage.toString());
     if (this.value !== Å) list.push('value', this.value.toString());
@@ -80,6 +80,12 @@ export default class Event {
 
 Event[immerable] = true;
 
+Event.toEvent = (data) => {
+  if (!data) return new Event({});
+  if (data instanceof Event) return data;
+  if (Array.isArray(data)) return new Event(...data);
+  return new Event(data);
+};
 /**
  * this is a class that determines whether an broadcast matches a pattern.
  */

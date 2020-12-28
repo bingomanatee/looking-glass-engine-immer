@@ -7,7 +7,7 @@ const p = require('./../package.json');
 const { ValueStream, ABSENT } = require('./../lib/index');
 
 tap.test(p.name, (suite) => {
-  suite.test('ValueStresm', (testVS) => {
+  suite.test('ValueStream', (testVS) => {
     testVS.test('constructor', (testVSc) => {
       testVSc.test('basic', (basicTest) => {
         const basic = new ValueStream(3);

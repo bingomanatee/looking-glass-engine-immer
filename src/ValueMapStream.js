@@ -58,6 +58,7 @@ const mergeNext = (event, target) => {
 export default class ValueMapStream extends ValueStream {
   constructor(value, ...args) {
     super(toMap(value), ...args);
+    this.streams = new Map();
     this._watchSet();
   }
 
@@ -66,6 +67,12 @@ export default class ValueMapStream extends ValueStream {
     this.when(onlyMap, preNext);
     this.when(setToNext, commitSet);
     this.when(mergeNext, preCommitNext);
+  }
+
+  addStream(name, stream) {
+    if (this._streams.has(name)) {
+      console.warn('redefining stream ', )
+    }
   }
 
   set(key, value) {

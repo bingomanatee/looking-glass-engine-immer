@@ -1,50 +1,65 @@
-import { BehaviorSubject, from, Subject } from 'rxjs';
-import isEqual from 'lodash/isEqual';
 import {
-  combineLatest, distinctUntilChanged, filter, map,
-} from 'rxjs/operators';
-import lGet from 'lodash/get';
-import Event, { EventFilter } from './Event';
-import {
-  E_COMMIT, E_FILTER, E_INITIAL, E_VALIDATE, A_NEXT, E_COMPLETE, A_ANY, A_ACTION,
-  defaultEventTree, eqÅ, Å, e,
+  A_ACTION, e, toMap,
 } from './constants';
 
-import setProxy, { SET_AFTER, SET_BEFORE } from './setProxy';
-
-export default (baseClass) => {
-  class NextClass extends baseClass {
-    constructor(...args) {
-      const [value, options] = args;
-      super(...args);
-      this._trans = setProxy(this.onTransChange.bind(this));
-      this._actions = new Map();
-      const newActions = lGet(options, 'actions');
-      if (newActions) {
-        this.addAdtions(newActions);
-      }
+const actionProxy = (stream) => new Proxy(stream, {
+  get(target, name) {
+    if (target._actions.has(name)) {
+      return (...args) => {
+        target._actions.get(name)(target, ...args);
+      };
     }
+    if (target.send) {
+      return (...args) => {
+        target.send(A_ACTION, {
+          name,
+          args,
+        });
+      };
+    }
+    throw e(`no action ${name}`, target);
+  },
+});
+
+const doObj = (stream) => {
+  const out = {};
+
+  stream._actions.forEach((fn, name) => {
+    out[name] = (...args) => fn(stream, ...args);
+  });
+
+  return out;
+};
+
+export default (stream, actions) => {
+  return Object.assign(stream, {
+    addActions(objOrMap) {
+      toMap(objOrMap).forEach((fn, name) => {
+        stream.addAction(name, fn);
+      });
+      return stream;
+    },
+    _actions: toMap(actions),
+    addAction(name, fn) {
+      if (!(typeof fn === 'function')) {
+        console.error('cannot add ', name, ' -- not a function', fn);
+        return stream;
+      }
+      if (stream._actions.has(name)) {
+        console.warn('redefining action', name);
+      }
+      stream._actions.set(name, fn);
+      return stream;
+    },
 
     get do() {
       if (!(typeof Proxy === 'undefined')) {
-        return this._doMap();
+        return doObj(stream);
       }
-      return new Proxy(this, {
-        get(target, key) {
-          if (target._actions.has(key)) {
-            return (...args) => {
-              target._actions.get(key)(target, ...args);
-            };
-          }
-          return (...args) => {
-            target.send(A_ACTION, {
-              name: key,
-              value: args,
-            });
-          };
-        },
-      });
-    }
-  }
-  return NextClass;
+      if (!stream._doProxy) {
+        stream._doProxy = actionProxy(stream);
+      }
+      return stream._doProxy;
+    },
+  });
 };

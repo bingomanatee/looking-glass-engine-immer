@@ -24,6 +24,7 @@ export const eqÅ = (target, subject) => (typeof subject === 'undefined') || sub
 export const e = (message, meta) => Object.assign(new Error(message), { meta });
 
 export const toMap = (item) => {
+  if (!item) return new Map();
   if (item instanceof Map) return item;
   const out = new Map();
   if (typeof item === 'object') {
