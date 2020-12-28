@@ -32,32 +32,26 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7d802906-2f1f-4c94-9718-b240e37b78c5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/ValueMapStream.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/addTrans.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/setProxy.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/ValueMapStream.spec.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/setProxy.spec.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/util.spec.js" afterDir="false" />
+    <list default="true" id="7d802906-2f1f-4c94-9718-b240e37b78c5" name="Default Changelist" comment="basic structures.">
+      <change afterPath="$PROJECT_DIR$/src/addActions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Event.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Event.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ValueStream.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ValueStream.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ValueMapStream.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ValueMapStream.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Event.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Event.spec.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/ValueStream.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/ValueStream.spec.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="GithubDefaultAccount">
-    <option name="defaultAccountId" value="4be33fde-76a4-46d5-b8ce-80e409bcb119" />
   </component>
   <component name="ProjectId" id="1m75PT0KDRRa4yGWbbxpQ6FEq18" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -96,6 +90,9 @@
       <recent name="$PROJECT_DIR$/test" />
       <recent name="$PROJECT_DIR$/src" />
     </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="$PROJECT_DIR$/src/constants.js" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
@@ -118,8 +115,23 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1608831764654</updated>
-      <workItem from="1608955823865" duration="30451000" />
+      <workItem from="1608955823865" duration="32034000" />
     </task>
+    <task id="LOCAL-00001" summary="basic structures.">
+      <created>1609098691099</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1609098691099</updated>
+    </task>
+    <task id="LOCAL-00002" summary="basic structures.">
+      <created>1609098713932</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1609098713932</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -136,6 +148,10 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="basic structures." />
+    <option name="LAST_COMMIT_MESSAGE" value="basic structures." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

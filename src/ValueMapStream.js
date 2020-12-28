@@ -1,19 +1,8 @@
-
 import ValueStream from './ValueStream';
 import {
-  A_SET, A_NEXT, E_COMMIT, E_INITIAL, E_PRECOMMIT,
+  A_NEXT, A_SET, E_COMMIT, E_INITIAL, E_PRECOMMIT, toMap,
 } from './constants';
 import { EventFilter } from './Event';
-
-const toMap = (item) => {
-  if (item instanceof Map) return item;
-  const out = new Map();
-  if (typeof item === 'object') {
-    [...Object.keys(item)].forEach((key) => out.set(key, item[key]));
-    return out;
-  }
-  return out;
-};
 
 const preNext = new EventFilter({
   action: A_NEXT,
@@ -52,7 +41,7 @@ const setToNext = (event, target) => {
   }
   event.complete();
   target.next(next);
-}
+};
 
 const mergeNext = (event, target) => {
   console.log('--- onSet: ', event.toString(), event.value);
@@ -64,7 +53,7 @@ const mergeNext = (event, target) => {
     console.log('--- _onSet skipping ', event.value);
   }
   event.next(next);
-}
+};
 
 export default class ValueMapStream extends ValueStream {
   constructor(value, ...args) {
