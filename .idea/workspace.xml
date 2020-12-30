@@ -13,10 +13,8 @@
     <list default="true" id="7d802906-2f1f-4c94-9718-b240e37b78c5" name="Default Changelist" comment="basic structures.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ValueStream.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ValueStream.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/addActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/addActions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/ValueMapStream.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/ValueMapStream.spec.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/ValueStream.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/ValueStream.spec.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/addActions.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/addActions.spec.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +123,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609289019150</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="validated finalize; tested immer shim">
+      <created>1609302473836</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1609302473836</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -147,13 +152,18 @@
     <MESSAGE value="basic structures." />
     <MESSAGE value="implementing actions" />
     <MESSAGE value="Got map working. TODO: work on filter" />
-    <option name="LAST_COMMIT_MESSAGE" value="Got map working. TODO: work on filter" />
+    <MESSAGE value="validated finalize; tested immer shim" />
+    <option name="LAST_COMMIT_MESSAGE" value="validated finalize; tested immer shim" />
   </component>
   <component name="WindowStateProjectService">
     <state x="780" y="294" key="#Plugins" timestamp="1609276358928">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
     <state x="780" y="294" key="#Plugins/0.23.2560.1417@0.23.2560.1417" timestamp="1609276358928" />
+    <state x="965" y="464" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1609302168594">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state x="965" y="464" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.2560.1417@0.23.2560.1417" timestamp="1609302168594" />
     <state x="100" y="123" width="2360" height="1217" key="DiffContextDialog" timestamp="1609288446043">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
@@ -162,10 +172,10 @@
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
     <state x="1005" y="267" key="RollbackChangesDialog/0.23.2560.1417@0.23.2560.1417" timestamp="1609288318704" />
-    <state x="780" y="408" key="Vcs.Push.Dialog.v2" timestamp="1609289024081">
+    <state x="780" y="408" key="Vcs.Push.Dialog.v2" timestamp="1609302475580">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
-    <state x="780" y="408" key="Vcs.Push.Dialog.v2/0.23.2560.1417@0.23.2560.1417" timestamp="1609289024081" />
+    <state x="780" y="408" key="Vcs.Push.Dialog.v2/0.23.2560.1417@0.23.2560.1417" timestamp="1609302475580" />
     <state x="100" y="123" width="2360" height="1217" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1609288446043">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
@@ -189,7 +199,6 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/test/ValueMapStream.spec.js</url>
           <line>44</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

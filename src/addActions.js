@@ -3,22 +3,20 @@ import {
 } from './constants';
 import ValueMapStream from './ValueMapStream';
 
-const SET_RE = /^set(.*)$/i;
+const SET_RE = /^set(.+)$/i;
 
 const actionProxy = (stream) => new Proxy(stream, {
   get(target, name) {
     if (target._actions.has(name)) {
-      return (...args) => {
-        target._actions.get(name)(target, ...args);
-      };
+      return (...args) => target._actions.get(name)(target, ...args);
     }
-
     if (target instanceof ValueMapStream) {
       const nameString = `${name}`;
       if (SET_RE.test(nameString)) {
         // eslint-disable-next-line no-unused-vars
         const [setName, restOfName] = SET_RE.exec(nameString);
-        const keyLCFirst = restOfName.substr(0, 1).toLowerCase + key.substr(1);
+        const keyLCFirst = restOfName.substr(0, 1).toLowerCase + restOfName.substr(1);
+
         if (target.value.has(keyLCFirst)) return (value) => target.set(keyLCFirst, value);
         const keyLC = restOfName.toLowerCase();
         const matchingKey = [...target.value.keys()]
@@ -80,7 +78,7 @@ export default (stream, actions) => Object.assign(stream, {
   },
 
   get do() {
-    if (!(typeof Proxy === 'undefined')) {
+    if (typeof Proxy === 'undefined') {
       return doObj(stream);
     }
     if (!stream._doProxy) {
