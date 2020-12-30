@@ -1,6 +1,9 @@
 /* eslint-disable camelcase */
-import produce from 'immer';
+import {
+  produce, createDraft, enableMapSet, current,
+} from 'immer';
 
+enableMapSet();
 const tap = require('tap');
 const p = require('./../package.json');
 
@@ -100,6 +103,43 @@ tap.test(p.name, (suite) => {
       });
 
       testVSFilter.end();
+    });
+
+    testVS.test('finalize', (testVSfin) => {
+      const basic = new ValueStream(produce([], () => {}), {
+        finalize: (event, target) => {
+          event.next(produce(target.value, (list) => {
+            if (Array.isArray(event.value)) {
+              return event.value;
+            }
+            list.push(event.value);
+          }));
+        },
+      });
+
+      testVSfin.same((basic.value), []);
+      basic.next(1);
+
+      testVSfin.same((basic.value), [1]);
+      let immutableError;
+      try {
+        basic.value.push(2);
+      } catch (err) {
+        immutableError = err;
+      }
+      testVSfin.same(immutableError.message, 'Cannot add property 1, object is not extensible');
+
+      basic.next([2, 3, 4]);
+      testVSfin.same(basic.value, [2, 3, 4]);
+      let immutableError2;
+      try {
+        basic.value.push(2);
+      } catch (err) {
+        immutableError2 = err;
+      }
+      testVSfin.same(immutableError2.message, 'Cannot add property 3, object is not extensible');
+
+      testVSfin.end();
     });
 
     testVS.end();

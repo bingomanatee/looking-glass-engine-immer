@@ -1,5 +1,5 @@
 import {
-  BehaviorSubject, from, Subject, of, combineLatest, Observable,
+  BehaviorSubject, from as fromEffect, Subject, of, combineLatest, Observable,
 } from 'rxjs';
 import isEqual from 'lodash/isEqual';
 import {
@@ -18,6 +18,11 @@ const nextFilter = new EventFilter({
   stage: E_COMMIT,
 });
 
+const onPreCommitNext = new EventFilter({
+  action: A_NEXT,
+  stage: E_PRECOMMIT,
+});
+
 export default class ValueStream {
   constructor(value, options = {}) {
     this._valueSubject = new BehaviorSubject(value);
@@ -34,7 +39,7 @@ export default class ValueStream {
       );
     // eslint-disable-next-line no-shadow
     const {
-      filter: myFilter, name, debug = false, preCommit,
+      filter: myFilter, name, debug = false, finalize,
     } = options;
     if (typeof myFilter === 'function') {
       this.filter(myFilter);
@@ -42,11 +47,9 @@ export default class ValueStream {
     this.name = name || nanoid();
     this.debug = debug;
 
-    if (typeof preCommit === 'function') {
-      this.on(preCommit, A_NEXT, E_PRECOMMIT);
-      this.next(value);
+    if (typeof finalize === 'function') {
+      this.when(finalize, onPreCommitNext);
     }
-
     this._watchEvents();
   }
 
@@ -63,10 +66,9 @@ export default class ValueStream {
       this._$eventStream = new Subject()
         .pipe(
           switchMap((value) => new BehaviorSubject(value)),
-          catchError((error) => {
-            target.error(error);
-            return null;
-          }),
+          catchError((error) =>
+          //   target.error(error);
+            fromEffect([Å])),
           filter((anEvent) => anEvent instanceof Event),
         );
     }
@@ -76,7 +78,7 @@ export default class ValueStream {
 
   error(error, event) {
     if (lGet(error, 'error')) {
-      return this._errorStream.next(error);
+      return this._errorStream.next({ ...error, target: this });
     }
     this._errorStream.next({
       target: this,
@@ -105,7 +107,6 @@ export default class ValueStream {
         event.next(next);
       } catch (error) {
         event.error(error);
-        target.error(error, event);
       }
     }), A_NEXT, E_FILTER);
   }
@@ -150,22 +151,17 @@ export default class ValueStream {
       }),
     ).subscribe((event) => {
       if (this.debug) console.log('doing ', event.toString(), fn.toString());
-      try {
-        fn(event, target);
-      } catch (error) {
-        target.error({
-          message: lGet(error, 'message', ''),
-          error,
-          target,
-        });
-      }
+      fn(event, target);
     });
     return this;
   }
 
   send(action, value, stages) {
     const actionStages = stages || this._eventTree.get(action) || this._eventTree.get(A_ANY);
-    combineLatest(of(action), of(new BehaviorSubject(value)), from(actionStages))
+    const onError = this._errorStream.next.bind(this._errorStream);
+    const subject = new BehaviorSubject(value);
+    subject.subscribe({ error: onError });
+    combineLatest(of(action), of(subject), fromEffect(actionStages))
       // eslint-disable-next-line no-unused-vars
       .pipe(
         // eslint-disable-next-line no-unused-vars
@@ -174,7 +170,6 @@ export default class ValueStream {
       )
       .subscribe({
         next: this._eventStream.next.bind(this._eventStream),
-        error: this._errorStream.next.bind(this._errorStream),
       });
   }
 

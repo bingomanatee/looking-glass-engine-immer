@@ -69,7 +69,7 @@ tap.test(p.name, (suite) => {
       });
 
       const throwIfNotNumber = (field) => (event) => {
-        if (!(typeof event.value === 'number')) {
+        if (!(typeof event.value.get(field) === 'number')) {
           event.error(new Error(`${field} must be a number`), event);
         }
       };
@@ -83,7 +83,6 @@ tap.test(p.name, (suite) => {
       coord.subscribe({
         next: history.push.bind(history),
         error: (e) => {
-          console.log('---- error:', e);
           errors.push(e.message);
         },
       });
@@ -124,10 +123,10 @@ tap.test(p.name, (suite) => {
       afsTest.same(history, [e1, e2]);
 
       coord.set('x', 'three');
+      afsTest.same(history, [e1, e2]);
       afsTest.same(errors, [
         'x must be a number',
       ]);
-      afsTest.same(history, [e1, e2]);
 
       coord.set('y', 1);
       afsTest.same(errors, [
@@ -140,7 +139,6 @@ tap.test(p.name, (suite) => {
         'x must be a number',
       ]);
       afsTest.same(history, [e1, e2, e2y1, e3]);
-
 
       coord.set('x', 'five');
       afsTest.same(errors, [
@@ -157,6 +155,7 @@ tap.test(p.name, (suite) => {
       ]);
       afsTest.same(history, [e1, e2, e2y1, e3]);
 
+
       coord.set('y', 3);
       coord.set('x', 6);
       afsTest.same(errors, [
@@ -167,7 +166,7 @@ tap.test(p.name, (suite) => {
       afsTest.same(history, [e1, e2, e2y1, e3, e4, e4x6]);
 
       afsTest.end();
-    }, {skip: true});
+    });
 
     testVS.end();
   });
