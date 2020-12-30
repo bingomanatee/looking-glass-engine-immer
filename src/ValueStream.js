@@ -9,7 +9,7 @@ import lGet from 'lodash/get';
 import { nanoid } from 'nanoid';
 import Event, { EventFilter } from './Event';
 import {
-  E_COMMIT, E_FILTER, E_INITIAL, E_VALIDATE, A_NEXT, E_COMPLETE, A_ANY,
+  E_COMMIT, E_PRECOMMIT, E_FILTER, E_INITIAL, E_VALIDATE, A_NEXT, E_COMPLETE, A_ANY,
   defaultEventTree, eqÅ, Å, e,
 } from './constants';
 
@@ -23,14 +23,29 @@ export default class ValueStream {
     this._valueSubject = new BehaviorSubject(value);
     this._eventTree = new Map(defaultEventTree);
 
-    this._errorStream = new Subject();
+    this._errorStream = new Subject()
+      .pipe(
+        map((errorDef) => {
+          if (errorDef.error && errorDef.error.message && !errorDef.message) {
+            return { ...errorDef, message: errorDef.error.message };
+          }
+          return errorDef;
+        }),
+      );
     // eslint-disable-next-line no-shadow
-    const { filter: myFilter, name, debug = false } = options;
+    const {
+      filter: myFilter, name, debug = false, preCommit,
+    } = options;
     if (typeof myFilter === 'function') {
       this.filter(myFilter);
     }
     this.name = name || nanoid();
     this.debug = debug;
+
+    if (typeof preCommit === 'function') {
+      this.on(preCommit, A_NEXT, E_PRECOMMIT);
+      this.next(value);
+    }
 
     this._watchEvents();
   }
@@ -48,11 +63,11 @@ export default class ValueStream {
       this._$eventStream = new Subject()
         .pipe(
           switchMap((value) => new BehaviorSubject(value)),
-          catchError((e) => {
-            target.error(e);
+          catchError((error) => {
+            target.error(error);
             return null;
           }),
-          filter((e) => e instanceof Event),
+          filter((anEvent) => anEvent instanceof Event),
         );
     }
 
@@ -64,11 +79,9 @@ export default class ValueStream {
       return this._errorStream.next(error);
     }
     this._errorStream.next({
-      ...error,
-      error,
-      message: error.message,
       target: this,
       event,
+      error,
     });
     return this;
   }
@@ -128,7 +141,13 @@ export default class ValueStream {
     const target = this;
 
     this._eventStream.pipe(
-      filter((event) => test.matches(event)),
+      filter((event) => {
+        const out = test.matches(event);
+        if (this.debug && out) {
+          console.log('matched', event.toString(), 'to:', fn.toString());
+        }
+        return out;
+      }),
     ).subscribe((event) => {
       if (this.debug) console.log('doing ', event.toString(), fn.toString());
       try {
@@ -149,6 +168,7 @@ export default class ValueStream {
     combineLatest(of(action), of(new BehaviorSubject(value)), from(actionStages))
       // eslint-disable-next-line no-unused-vars
       .pipe(
+        // eslint-disable-next-line no-unused-vars
         filter(([_, stream]) => !stream.isStopped),
         map((args) => new Event(...args)),
       )
@@ -174,21 +194,23 @@ export default class ValueStream {
     this._valueSubject.complete();
   }
 
-  subscribe(onNext, onError, onDone) {
+  subscribe(onNext, onError, onComplete) {
     if (typeof onNext === 'object') {
-      return this._valueSubject.subscribe(onNext);
+      const { next, error, complete } = onNext;
+      return this.subscribe(next, error, complete);
     }
+
     let failSub;
     if (typeof onError === 'function') {
       failSub = this._errorStream.subscribe(onError);
     }
 
     const manifest = {
-      done: () => {
+      complete: () => {
         if (failSub) {
           failSub.unsubscribe();
-          if (typeof onDone === 'function') {
-            onDone();
+          if (typeof onComplete === 'function') {
+            onComplete();
           }
         }
       },
@@ -200,6 +222,7 @@ export default class ValueStream {
     if (typeof onNext === 'function') {
       manifest.next = onNext;
     }
+
     return this._valueSubject.subscribe(manifest);
   }
 

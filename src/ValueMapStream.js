@@ -1,28 +1,43 @@
+import { catchError, filter, switchMap } from 'rxjs/operators';
+import {
+  Subject, BehaviorSubject, from, of as ofStream,
+} from 'rxjs';
+import intersection from 'lodash/intersection';
+import lGet from 'lodash/get';
 import ValueStream from './ValueStream';
 import {
-  A_NEXT, A_SET, E_COMMIT, E_INITIAL, E_PRECOMMIT, toMap,
+  setEvents,
+  A_NEXT, A_SET, E_COMMIT, E_INITIAL, E_PRECOMMIT, E_PRE_MAP_MERGE,
+  mapNextEvents, E_MAP_MERGE, toMap, e, Å, E_RESTRICT,
 } from './constants';
 import { EventFilter } from './Event';
 
-const preNext = new EventFilter({
+const onInitialNext = new EventFilter({
   action: A_NEXT,
   stage: E_INITIAL,
 });
 
-const preCommitNext = new EventFilter({
+const onMergeNext = new EventFilter({
   action: A_NEXT,
-  stage: E_PRECOMMIT,
+  stage: E_MAP_MERGE,
 });
 
-const preSet = new EventFilter({
+const onPrecommitSet = new EventFilter({
   action: A_SET,
   stage: E_PRECOMMIT,
 });
 
-const commitSet = new EventFilter({
+const onCommitSet = new EventFilter({
   action: A_SET,
   stage: E_COMMIT,
 });
+
+const onRestrictKeyForSet = new EventFilter({
+  action: A_SET,
+  stage: E_RESTRICT,
+});
+
+const SR_FROM_SET = Symbol('action:set');
 
 function onlyMap(e) {
   if (!(e.value instanceof Map)) {
@@ -30,56 +45,85 @@ function onlyMap(e) {
   }
 }
 
+function onlyOldKeys(event, target) {
+  const oldKeys = [...target.value.keys()];
+  event.value.forEach((value, key) => {
+    if (!oldKeys.includes(key)) {
+      throw e(`key ${key} must be present in ${oldKeys.join(', ')}`, target);
+    }
+  });
+}
+
 const setToNext = (event, target) => {
-  console.log('--- onSet: ', event.toString(), event.value);
-  const next = new Map(target.value);
+  const nextValue = new Map(target.value);
   if (event.value instanceof Map) {
-    event.value.forEach((value, key) => next.set(value, key));
-    console.log('--- updated from ', event.value, 'to', next);
-  } else {
-    console.log('--- _onSet skipping ', event.value);
+    event.value.forEach((value, key) => nextValue.set(key, value));
   }
   event.complete();
-  target.next(next);
+  target.send(A_NEXT, nextValue);
 };
 
 const mergeNext = (event, target) => {
-  console.log('--- onSet: ', event.toString(), event.value);
   const next = new Map(target.value);
   if (event.value instanceof Map) {
     event.value.forEach((value, key) => next.set(key, value));
-    console.log('--- updated from ', event.value, 'to', next, 'from');
-  } else {
-    console.log('--- _onSet skipping ', event.value);
   }
   event.next(next);
 };
 
 export default class ValueMapStream extends ValueStream {
-  constructor(value, ...args) {
-    super(toMap(value), ...args);
-    this.streams = new Map();
+  constructor(value, options, ...args) {
+    super(toMap(value), options, ...args);
+    this.fieldSubjects = new Map();
+    this._eventTree.set(A_NEXT, mapNextEvents);
+    this._eventTree.set(A_SET, setEvents);
+    if (lGet(options, 'noNewKeys')) {
+      this.when(onlyOldKeys, onRestrictKeyForSet);
+    }
     this._watchSet();
   }
 
   _watchSet() {
-    this.when(onlyMap, preSet);
-    this.when(onlyMap, preNext);
-    this.when(setToNext, commitSet);
-    this.when(mergeNext, preCommitNext);
+    this.when(onlyMap, onPrecommitSet);
+    this.when(mergeNext, onMergeNext);
+    this.when(onlyMap, onInitialNext);
+    this.when(setToNext, onCommitSet);
   }
 
-  addStream(name, stream) {
-    if (this._streams.has(name)) {
-      console.warn('redefining stream ', )
-    }
+  onField(fn, name, stage = E_PRECOMMIT) {
+    const names = Array.isArray(name) ? [...name] : [name];
+    const ifIntersects = (value) => {
+      if (!(value instanceof Map)) {
+        return false;
+      }
+      const matches = [...value.keys()].filter((key) => names.includes(key));
+      return matches.length;
+    };
+
+    // first - if any changes are sent through set() to the fields of interest
+    const onTargets = new EventFilter(A_SET, ifIntersects, stage);
+
+    this.when(fn, onTargets);
+
+    const onStraightNext = new EventFilter({
+      action: A_NEXT,
+      stage: E_PRE_MAP_MERGE,
+      value: ifIntersects,
+      source: (src) => src !== SR_FROM_SET,
+    });
+
+    this.when(fn, onStraightNext);
   }
 
-  set(key, value) {
+  set(key, value, fromSubject) {
     if (key instanceof Map) {
-      return this.stream(A_SET, key);
+      return this.send(A_SET, key);
     }
-    return this.stream(A_SET, new Map([[key, value]]));
+    if (!fromSubject && this.fieldSubjects.has(key)) {
+      this.fieldSubjects.get(key).next(value);
+      return this;
+    }
+    return this.send(A_SET, new Map([[key, value]]));
   }
 
   get(key) {

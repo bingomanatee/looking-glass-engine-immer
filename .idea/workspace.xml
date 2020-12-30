@@ -11,19 +11,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7d802906-2f1f-4c94-9718-b240e37b78c5" name="Default Changelist" comment="basic structures.">
-      <change afterPath="$PROJECT_DIR$/test/addActions.spec.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Event.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Event.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Event.spec.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ValueMapStream.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ValueMapStream.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ValueStream.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ValueStream.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/addActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/addActions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/ValueStream.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/ValueStream.spec.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ValueMapStream.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/ValueMapStream.spec.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/setProxy.spec.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/setProxy.spec.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +113,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609098713932</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="implementing actions">
+      <created>1609188024515</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1609188024515</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -138,13 +140,50 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="basic structures." />
-    <option name="LAST_COMMIT_MESSAGE" value="basic structures." />
+    <MESSAGE value="implementing actions" />
+    <option name="LAST_COMMIT_MESSAGE" value="implementing actions" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="780" y="294" key="#Plugins" timestamp="1609276358928">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state x="780" y="294" key="#Plugins/0.23.2560.1417@0.23.2560.1417" timestamp="1609276358928" />
+    <state x="100" y="123" width="2360" height="1217" key="DiffContextDialog" timestamp="1609288446043">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state x="100" y="123" width="2360" height="1217" key="DiffContextDialog/0.23.2560.1417@0.23.2560.1417" timestamp="1609288446043" />
+    <state x="1005" y="267" key="RollbackChangesDialog" timestamp="1609288318704">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state x="1005" y="267" key="RollbackChangesDialog/0.23.2560.1417@0.23.2560.1417" timestamp="1609288318704" />
+    <state x="780" y="408" key="Vcs.Push.Dialog.v2" timestamp="1609188026132">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state x="780" y="408" key="Vcs.Push.Dialog.v2/0.23.2560.1417@0.23.2560.1417" timestamp="1609188026132" />
+    <state x="100" y="123" width="2360" height="1217" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1609288446043">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state x="100" y="123" width="2360" height="1217" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog/0.23.2560.1417@0.23.2560.1417" timestamp="1609288446043" />
+    <state x="100" y="123" width="2360" height="1217" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1609288965473">
+      <screen x="0" y="23" width="2560" height="1417" />
+    </state>
+    <state x="100" y="123" width="2360" height="1217" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.2560.1417@0.23.2560.1417" timestamp="1609288965473" />
     <state x="861" y="341" width="838" height="1032" key="search.everywhere.popup" timestamp="1609181365629">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
     <state x="861" y="341" width="838" height="1032" key="search.everywhere.popup/0.23.2560.1417@0.23.2560.1417" timestamp="1609181365629" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/test/ValueMapStream.spec.js</url>
+          <line>44</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

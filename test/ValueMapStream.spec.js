@@ -1,10 +1,12 @@
 /* eslint-disable camelcase */
-import produce from 'immer';
+import { produce } from 'immer';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { tap as tapFilter } from 'rxjs/operators';
 
 const tap = require('tap');
 const p = require('../package.json');
 
-const { ValueMapStream, ABSENT } = require('../lib');
+const { ValueMapStream, ValueStream } = require('../lib');
 
 const initial = Object.freeze(
   new Map([
@@ -12,6 +14,7 @@ const initial = Object.freeze(
     ['b', ['alpha', 'beta', 'gamma']],
   ]),
 );
+
 
 tap.test(p.name, (suite) => {
   suite.test('ValueMapStream', (testVS) => {
@@ -38,72 +41,133 @@ tap.test(p.name, (suite) => {
 
       testVSNext.end();
     });
-    /*
 
-    testVS.test('filter', (testVSFilter) => {
-      const abs = (n, context) => {
-        //   console.log('abs: ', n, context);
-        if (typeof n !== 'number') throw new Error(`${n} must be a number`);
-        return Math.abs(n);
+    testVS.test('set', (testVSNext) => {
+      const basic = new ValueMapStream(new Map(initial));
+      basic.set('a', 100);
+
+      testVSNext.same(basic.value, new Map([
+        ['a', 100],
+        ['b', ['alpha', 'beta', 'gamma']],
+      ]));
+
+      basic.set('z', 200);
+
+      testVSNext.same(basic.value, new Map([
+        ['a', 100],
+        ['b', ['alpha', 'beta', 'gamma']],
+        ['z', 200],
+      ]));
+
+      testVSNext.end();
+    });
+
+    testVS.test('onField', (afsTest) => {
+      const coord = new ValueMapStream({
+        x: 0,
+        y: 0,
+      });
+
+      const throwIfNotNumber = (field) => (event) => {
+        if (!(typeof event.value === 'number')) {
+          event.error(new Error(`${field} must be a number`), event);
+        }
       };
 
-      testVSFilter.test('update value', (updateValue) => {
-        const filtered = new ValueStream(3).filter(abs);
+      coord.onField(throwIfNotNumber('x'), 'x');
+      coord.onField(throwIfNotNumber('y'), 'y');
 
-        filtered.next(4);
-        updateValue.same(filtered.value, 4);
+      const errors = [];
+      const history = [];
 
-        filtered.next(-8);
-        updateValue.same(filtered.value, 8);
-
-        filtered.next(2);
-        updateValue.same(filtered.value, 2);
-        updateValue.end();
+      coord.subscribe({
+        next: history.push.bind(history),
+        error: (e) => {
+          console.log('---- error:', e);
+          errors.push(e.message);
+        },
       });
 
-      testVSFilter.test('throw', (filterThrow) => {
-        const filtered = new ValueStream(3).filter(abs);
+      const e1 = new Map([
+        ['x', 0],
+        ['y', 0],
+      ]);
+      const e2 = new Map([
+        ['x', 2],
+        ['y', 0],
+      ]);
+      const e2y1 = new Map([
+        ['x', 2],
+        ['y', 1],
+      ]);
+      const e3 = new Map([
+        ['x', 4],
+        ['y', 1],
+      ]);
+      const e4 = new Map([
+        ['x', 4],
+        ['y', 3],
+      ]);
+      const e4x6 = new Map([
+        ['x', 6],
+        ['y', 3],
+      ]);
 
-        filtered.next(4);
-        filterThrow.same(filtered.value, 4);
+      afsTest.same(e1, coord.value);
+      afsTest.same([], errors);
+      afsTest.same(history, [e1]);
 
-        filtered.next(-8);
-        filterThrow.same(filtered.value, 8);
+      coord.set('x', 2);
 
-        filtered.next('6');
-        filterThrow.same(filtered.value, 8);
+      afsTest.same(e2, coord.value);
+      afsTest.same([], errors);
+      afsTest.same(history, [e1, e2]);
 
-        filterThrow.end();
-      });
+      coord.set('x', 'three');
+      afsTest.same(errors, [
+        'x must be a number',
+      ]);
+      afsTest.same(history, [e1, e2]);
 
-      testVSFilter.test('subscribe', (subTest) => {
-        const filtered = new ValueStream(3).filter(abs);
-        const history = [];
-        const errors = [];
+      coord.set('y', 1);
+      afsTest.same(errors, [
+        'x must be a number',
+      ]);
+      afsTest.same(history, [e1, e2, e2y1]);
 
-        filtered.subscribe(history.push.bind(history), ({ message }) => errors.push(message));
+      coord.set('x', 4);
+      afsTest.same(errors, [
+        'x must be a number',
+      ]);
+      afsTest.same(history, [e1, e2, e2y1, e3]);
 
-        subTest.same(history, [3]);
-        subTest.same(errors, []);
 
-        filtered.next(4);
-        subTest.same(history, [3, 4]);
-        subTest.same(errors, []);
+      coord.set('x', 'five');
+      afsTest.same(errors, [
+        'x must be a number',
+        'x must be a number',
+      ]);
+      afsTest.same(history, [e1, e2, e2y1, e3]);
 
-        filtered.next(-8);
-        subTest.same(history, [3, 4, 8]);
-        subTest.same(errors, []);
+      coord.set('y', 'two');
+      afsTest.same(errors, [
+        'x must be a number',
+        'x must be a number',
+        'y must be a number',
+      ]);
+      afsTest.same(history, [e1, e2, e2y1, e3]);
 
-        filtered.next('6');
-        subTest.same(history, [3, 4, 8]);
-        subTest.same(errors, ['6 must be a number']);
+      coord.set('y', 3);
+      coord.set('x', 6);
+      afsTest.same(errors, [
+        'x must be a number',
+        'x must be a number',
+        'y must be a number',
+      ]);
+      afsTest.same(history, [e1, e2, e2y1, e3, e4, e4x6]);
 
-        subTest.end();
-      });
-
-      testVSFilter.end();
-    });
-*/
+      afsTest.end();
+    }, {skip: true});
 
     testVS.end();
   });
